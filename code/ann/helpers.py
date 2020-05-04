@@ -1,6 +1,7 @@
 # ----------------- Utility functions ------------------------------------- #
 
 import pandas as pd
+import numpy as np
 
 
 def open_data(file,
@@ -25,6 +26,7 @@ def create_train_test_split(dataframe,
                             test_frac,
                             target,
                             norm = False,
+                            lifted = False,
                             random_state = 123):
     """ Create the train and test set for the training with a random method
         Arguments :
@@ -49,12 +51,19 @@ def create_train_test_split(dataframe,
     test_features =test_dataset
     if norm == True:
         train_features, test_features = norm(train_features), norm(test_features)
-    train_dataset = pd.concat([train_features, train_labels], axis=1)
-    test_dataset = pd.concat([test_features, test_labels], axis=1)
-    train_dataset, test_dataset = train_dataset.dropna(), test_dataset.dropna()   
-    train_data = train_dataset.to_numpy(dtype=np.float32) 
-    test_data = test_dataset.to_numpy(dtype=np.float32)
-    return train_data, test_data
+    if lifted == True:
+        train_data = train_features.to_numpy(dtype=np.float32) 
+        train_labels = np.array(list(train_labels.values))
+        test_data = test_features.to_numpy(dtype=np.float32) 
+        test_labels = np.array(list(test_labels.values))
+        return train_data, train_labels, test_data, test_labels
+    else :  
+        train_dataset = pd.concat([train_features, train_labels], axis=1)
+        test_dataset = pd.concat([test_features, test_labels], axis=1)
+        train_dataset, test_dataset = train_dataset.dropna(), test_dataset.dropna()  
+        train_data = train_dataset.to_numpy(dtype=np.float32) 
+        test_data = test_dataset.to_numpy(dtype=np.float32)
+        return train_data, test_data
 
 
 

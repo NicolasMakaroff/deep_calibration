@@ -52,8 +52,11 @@ class RegressorLiftedHeston(nn.Module):
 
         x = self.fc5(x)
             
-
+        return x
+    
+    
+    
 def init_weights(m):
     if type(m) == nn.Linear:
-        torch.nn.init.xavier_uniform_(m.weight)
+        nn.init.xavier_uniform_(m.weight)
         m.bias.data.fill_(0.0)
