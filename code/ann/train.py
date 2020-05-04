@@ -3,11 +3,16 @@ from tqdm.notebook import tqdm as tqdm_notebook
 import pandas as pd
 from torch import nn, optim
 import torch
+from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 from .model import init_weights
+import os
+import sys
+code_dir = os.path.dirname(os.getcwd())
+sys.path.insert(0, code_dir)
 
 _device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
+writer = SummaryWriter(code_dir + '/ann/runs/lifted_heston_experiment')
 
 def train(model,
           train_loader,
@@ -100,8 +105,12 @@ def train(model,
 
             model.train()        
             train_losses.append(running_loss/len(train_loader))
+            writer.add_scalar('Train/Loss', running_loss/len(train_loader), e)
+            writer.flush()
             test_loss = test_loss/len(test_loader)
-            test_losses.append(test_loss/len(test_loader))
+            test_losses.append(test_loss)
+            writer.add_scalar('Test/Loss', test_loss, e)
+            writer.flush()
             learningRate.append(optimizer.param_groups[0]['lr'])
             #scheduler.step(test_loss)
             scheduler.step()

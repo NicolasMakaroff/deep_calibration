@@ -1,7 +1,10 @@
 import scipy as scp
 from scipy.special import gamma
 import numpy as np
+from joblib import Parallel, delayed
+import multiprocessing
 
+num_cores = multiprocessing.cpu_count()
 
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -114,6 +117,7 @@ def psi_Lifted_Heston(K_,r_,omega,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
 def f(K_,r_,x,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
     return psi_Lifted_Heston(K_,r_,x-2*1j,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M)
 
+
 def Pricer_Lifted_Heston(K_,r_,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M,L_):
     a = 0
     b = 50
@@ -124,7 +128,7 @@ def Pricer_Lifted_Heston(K_,r_,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M,L_):
     gauss = 0
     for i in range(len(t)):
         gauss = gauss + w[i] * f(K_,r_,t[i],S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M)
-    #I = scp.integrate.fixed_quad(lambda x: psi_Lifted_Heston(K_,r_,x-2*1j,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M) , 0, L_)
+    #I = scp.integrate.quad(lambda x: psi_Lifted_Heston(K_,r_,x-2*1j,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M) , 0, L_)
     return (gauss* 0.5*(b - a) )
 
 
