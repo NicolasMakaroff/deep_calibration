@@ -1,0 +1,7 @@
+matplotlib
+numpy>=1.11.0
+jupyter
+torch==0.4.0
+pandas
+scipy
+ipykernel
