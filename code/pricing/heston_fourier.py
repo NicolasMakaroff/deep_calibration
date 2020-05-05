@@ -1,6 +1,7 @@
 import scipy as scp
 import numpy as np
 
+
 def phi(u,kappa_,S0_,r_,tau_,theta_,rho_,sigma_,V0_):
     """
     Utility
@@ -40,6 +41,7 @@ def phi(u,kappa_,S0_,r_,tau_,theta_,rho_,sigma_,V0_):
     c = np.cosh(gamma_*tau_/2)+((kappa_-1j*rho_*sigma_*u)/gamma_)*np.sinh(gamma_*tau_/2)
     d = 2*kappa_*theta_/(sigma_**2)
     return np.exp(a)*np.exp(-b)/(c**d)
+
 
 def psi(nu_,alpha_,K_,r_,tau_,kappa_,S0_,theta_,rho_,sigma_,V0_):
     """
@@ -83,7 +85,8 @@ def psi(nu_,alpha_,K_,r_,tau_,kappa_,S0_,theta_,rho_,sigma_,V0_):
     d = (alpha_+1j*nu_)*(alpha_+1+1j*nu_)
     return np.exp(-r_*tau_-alpha_*k_)/np.pi*(F/d).real
 
-def price(K_,alpha_,r_,tau_,kappa_,S0_,theta_,rho_,sigma_,V0_,L_):
+
+def price_heston_fourier(K_,alpha_,r_,tau_,kappa_,S0_,theta_,rho_,sigma_,V0_,L_):
     """
     Utility
     -------

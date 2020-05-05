@@ -3,6 +3,8 @@ from scipy.special import gamma
 import numpy as np
 from joblib import Parallel, delayed
 import multiprocessing
+import warnings
+warnings.filterwarnings("ignore")
 
 num_cores = multiprocessing.cpu_count()
 
@@ -33,7 +35,7 @@ def Loop2(t,M,g_0,T,V0,lamb_theta,c_gammas,gammas):
         g_0[0,k-1]=g(T-t[k-1],V0,lamb_theta,c_gammas,gammas)
     return g_0
 
-
+@jit
 def Ch_Lifted_Heston(omega,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
     # omega = argument of the ch. function
     # S0 = Initial price
@@ -104,7 +106,7 @@ def Ch_Lifted_Heston(omega,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
     
     return phi
 
-
+@jit
 def psi_Lifted_Heston(K_,r_,omega,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
     k_ = np.log(K_)
     phi = Ch_Lifted_Heston(omega,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M)
@@ -113,11 +115,11 @@ def psi_Lifted_Heston(K_,r_,omega,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
     d = aa*(aa+1)
     return np.exp(-r_*T-k_)/np.pi*(F/d).real
 
-
+@jit
 def f(K_,r_,x,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
     return psi_Lifted_Heston(K_,r_,x-2*1j,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M)
 
-
+@jit
 def Pricer_Lifted_Heston(K_,r_,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M,L_):
     a = 0
     b = 50

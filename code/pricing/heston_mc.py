@@ -1,6 +1,11 @@
 import numpy as np
 import scipy.stats as scp
+from math import *
+from numba import jit, njit
+import warnings
+warnings.filterwarnings("ignore")
 
+@jit
 def s_simul(kappa_,theta_,sigma_,rho_,r_,T_,L_,V0_,S0_):
     """
     Utility
@@ -35,17 +40,18 @@ def s_simul(kappa_,theta_,sigma_,rho_,r_,T_,L_,V0_,S0_):
 
     """
     V = [V0_]
-    X = [np.log(S0_)]
+    X = [log(S0_)]
     delta_t_ = T_/L_
-    delta_W_ = np.array([scp.norm.rvs(loc = 0, scale = np.sqrt(delta_t_), size = L_)]).T
-    delta_W_orth_ = np.array([scp.norm.rvs(loc = 0, scale = np.sqrt(delta_t_), size = L_)]).T
+    delta_W_ = np.array([np.random.normal(loc = 0, scale = sqrt(delta_t_), size = L_)]).T
+    delta_W_orth_ = np.array([np.random.normal(loc = 0, scale = np.sqrt(delta_t_), size = L_)]).T
     for i in range(L_):
-        Vi_ = V[i]+kappa_*(theta_-V[i])*delta_t_ + sigma_*np.sqrt(max(V[i],0))*(rho_*delta_W_[i][0] + np.sqrt(1-rho_**2)*delta_W_orth_[i][0])
+        Vi_ = V[i]+kappa_*(theta_-V[i])*delta_t_ + sigma_*np.sqrt(max(V[i],0))*(rho_*delta_W_[i][0] + sqrt(1-rho_**2)*delta_W_orth_[i][0])
         V.append(Vi_)
-        Xi_ = X[i] + (r_-1/2*V[i])*delta_t_ + np.sqrt(max(V[i],0)) * delta_W_[i][0]
+        Xi_ = X[i] + (r_-1/2*V[i])*delta_t_ + sqrt(max(V[i],0)) * delta_W_[i][0]
         X.append(Xi_)
     return X[L_]
 
+@jit
 def f(X_,K_):
     """
     Utility
@@ -65,8 +71,9 @@ def f(X_,K_):
         the payoff (>= 0)
 
     """
-    return max(np.exp(X_)-K_,0)
-    
+    return max(exp(X_)-K_,0)
+
+@jit
 def monte_carlo(kappa_,theta_,sigma_,rho_,r_,T_,L_,V0_,S0_,K0_,N_):
     """
     Utility
@@ -107,9 +114,10 @@ def monte_carlo(kappa_,theta_,sigma_,rho_,r_,T_,L_,V0_,S0_,K0_,N_):
     X = []
     for i in range(N_):
         X.append(f(s_simul(kappa_,theta_,sigma_,rho_,r_,T_,L_,V0_,S0_),K0_))
-    return sum(X)/N_
-    
-def price(esp_,r_,T_):
+    return np.sum(X)/N_
+
+@jit
+def price_heston_mc(kappa_,theta_,sigma_,rho_,r_,T_,L_,V0_,S0_,K0_,N_):
     """
     Utility
     -------
@@ -130,4 +138,5 @@ def price(esp_,r_,T_):
         the price of the Heston model by Monte Carlo
 
     """
-    return np.exp(-r_*T_)*esp_
+    esp_ = monte_carlo(kappa_,theta_,sigma_,rho_,r_,T_,L_,V0_,S0_,K0_,N_)
+    return exp(-r_*T_)*esp_
