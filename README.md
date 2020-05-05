@@ -2,6 +2,15 @@
 
 # Deep Calibration
 
+## Features
+
+- [x] nn module
+- [x] tensorboard
+- [ ] pricing speed comparison
+- [ ] gp notebook
+- [ ] prediction result comparison
+- [ ] 
+
 ## Getting Started
 
 ### Dependencies
