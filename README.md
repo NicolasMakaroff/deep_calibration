@@ -9,7 +9,11 @@
 - [ ] pricing speed comparison
 - [ ] gp notebook
 - [ ] prediction result comparison
-- [ ] 
+- [ ] check brent result
+- [ ] sobolev loss function
+- [ ] residual computation between rough and classic
+- [ ] transfer learning (mc)
+- [ ] arbitrage
 
 ## Getting Started
 

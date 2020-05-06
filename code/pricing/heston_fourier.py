@@ -1,5 +1,8 @@
 import scipy as scp
+from scipy.integrate import quad
 import numpy as np
+import warnings
+warnings.filterwarnings("ignore")
 
 
 def phi(u,kappa_,S0_,r_,tau_,theta_,rho_,sigma_,V0_):
@@ -123,5 +126,5 @@ def price_heston_fourier(K_,alpha_,r_,tau_,kappa_,S0_,theta_,rho_,sigma_,V0_,L_)
         price of Heston by Fourier
 
     """
-    I = scp.integrate.quad(lambda nu_: psi(nu_,alpha_,K_,r_,tau_,kappa_,S0_,theta_,rho_,sigma_,V0_) , 0, L_)
+    I = quad(lambda nu_: psi(nu_,alpha_,K_,r_,tau_,kappa_,S0_,theta_,rho_,sigma_,V0_) , 0, L_)
     return I[0]

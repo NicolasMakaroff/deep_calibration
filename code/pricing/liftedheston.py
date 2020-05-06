@@ -19,7 +19,7 @@ def F(u,v,var4,lamb,var5):
 def g(t,V0,lamb_theta,c_gammas,gammas):
     return V0 +lamb_theta*np.dot(c_gammas,1-np.exp(-t*gammas))
 
-
+@jit
 def Loop1(psi,mat,N,delta,gammas,M,omega,c,var4,lamb,var5):
     # Iteration for approximation of psi - see Slide 87
 
@@ -37,14 +37,24 @@ def Loop2(t,M,g_0,T,V0,lamb_theta,c_gammas,gammas):
 
 @jit
 def Ch_Lifted_Heston(omega,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
-    # omega = argument of the ch. function
-    # S0 = Initial price
-    # rho,lamb,theta,nu,V0 = parameters Lifted Heston
-    # N = number of factors in the model
-    # rN = constant used to define weights and mean-reversions
-    # alpha = H+1/2 where H is the Hurst index
-    # T = maturity
-    # M = number of steps in the time discretization to calculate ch. function
+    """
+    Characteristic function for the lifted heston model.
+    
+    Arguments:
+    ----------
+        omega: argument of the ch. function
+        S0: Initial price
+        rho,lamb,theta,nu,V0: parameters Lifted Heston
+        N: number of factors in the model
+        rN: constant used to define weights and mean-reversions
+        alpha: H+1/2 where H is the Hurst index
+        T: maturity
+        M: number of steps in the time discretization to calculate ch. function
+
+    Returns:
+    --------
+        phi
+    """
 
     # to make sure we calculate ch. function and not moment gen. function
     i=complex(0,1)
@@ -121,8 +131,28 @@ def f(K_,r_,x,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
 
 @jit
 def Pricer_Lifted_Heston(K_,r_,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M,L_):
+    """
+    Characteristic function for the lifted heston model.
+    
+    Arguments:
+    ----------
+        K_: strike
+        r_: rate
+        S0: Initial price
+        rho,lamb,theta,nu,V0: parameters Lifted Heston
+        N: number of factors in the model
+        rN: constant used to define weights and mean-reversions
+        alpha: H+1/2 where H is the Hurst index
+        T: maturity
+        M: number of steps in the time discretization to calculate ch. function
+        L_: (int) Level of the domain that we integrate
+
+    Returns:
+    --------
+        phi
+    """
     a = 0
-    b = 50
+    b = L_
     #f = lambda x: psi_Lifted_Heston(K_,r_,x-2*1j,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M)
     deg = 156
     x,w = np.polynomial.legendre.leggauss(deg)
@@ -133,4 +163,11 @@ def Pricer_Lifted_Heston(K_,r_,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M,L_):
     #I = scp.integrate.quad(lambda x: psi_Lifted_Heston(K_,r_,x-2*1j,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M) , 0, L_)
     return (gauss* 0.5*(b - a) )
 
-
+def create_vol_map():
+    func1 = Pricer_Lifted_Heston
+    func2 = input_.append
+    for s in np.arange(0.5,1.6,0.1):
+        for j in [0.1,0.3,0.6,0.9,1.2,1.5,1.8,2.0]:
+            c = func1(1,r_=0.05,s,j,rho=-0.7,lamb=1.3,theta=0.3,nu=0.3,V0=0.2,N=20,rN=2.5,alpha=0.1+1/2,M=200,L_=50)
+            func2([s,j,c])
+    return input_

@@ -2,7 +2,45 @@
 
 import pandas as pd
 import numpy as np
+from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
+init_notebook_mode(connected=True)
+import plotly.graph_objects as go
 
+import os
+import sys
+from os.path import dirname as up
+
+# Important directories
+code_dir = os.path.dirname(os.getcwd())
+deep_cal_dir = os.path.dirname(os.path.dirname(os.getcwd()))
+
+# Allows to import my own module
+sys.path.insert(0, code_dir)
+
+from datetime import datetime
+now = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+root_logdir = code_dir + '/ann/plots'
+logdir = "{}/plot-{}.html".format(root_logdir, now)
+
+
+def plot_map(z,save=False):
+    """
+    Plot the vol implied map
+    
+    Args:
+    -----
+        x: moneyness
+        y: maturity
+        z: (array_like) the implied vol
+        save: (boolean) save the file to the directory plot
+    """
+    x, y = np.linspace(5,15,11), np.linspace(1,20,8)
+    fig = go.Figure(data=go.Surface(x=x, y=y, z=z))
+    fig.update_layout(title='Implied volatility map', autosize=False,
+                  width=500, height=500,margin=dict(l=65, r=50, b=65, t=90))
+    if save == True:
+        fig.write_html(logdir)
+    else: fig.show()
 
 def open_data(file,
               info = False):
@@ -18,6 +56,17 @@ def open_data(file,
         print('Five first rows of the generated DataFrame : \n {}'.format(df.head()))
         print('\nDataFrame shape : {}\n'.format(df.shape))
     return df
+
+
+# Utility function to standardise inputs for NN training.
+def standardise_inputs(test_inputs, train_mean, train_std):
+    
+    logger.info("Normalizing labeled inputs for feeding in NN.")
+    
+    test_inputs -= train_mean
+    test_inputs /= train_std
+    
+    return test_inputs
 
 
 

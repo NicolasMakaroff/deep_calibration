@@ -14,6 +14,7 @@ deep_cal_dir = os.path.dirname(os.path.dirname(os.getcwd()))
 sys.path.insert(0, code_dir)
 
 from pricing.liftedheston import Pricer_Lifted_Heston
+from pricing.brent_iv import call_BS
 
 r_min = 0.0
 r_max = 10
@@ -51,12 +52,12 @@ shape_heston = np.reshape(output_heston,(40000,88))
 def BrentInput(iter_map):
     brent_output = [] 
     for i in iter_map:
-        brent_ = scp.optimize.brentq(lambda x: pricing_model.call_option_brent(x,i[0],1.,0.05,i[1],i[2]),-10,10)
+        brent_ = scp.optimize.brentq(lambda x: call_BS(x,i[0],1.,0.05,i[1],i[2]),-10,10)
         brent_output.append(brent_)
     return brent_output
 
 brent_loop = tqdm(input_, desc="Brent")
-brent_output = Parallel(n_jobs=num_cores)(delayed(processInput)(i) for i in brent_loop)
+brent_output = Parallel(n_jobs=num_cores)(delayed(BrentInput)(i) for i in brent_loop)
 
 brent_output = np.array(brent_output)
 
