@@ -55,3 +55,37 @@ class LiftedHestonDataset(Dataset):
 
     def __len__(self):
         return self.len
+    
+class TransferLearningDataset(Dataset):
+    """ Lifted Heston dataset.
+    
+    Args:
+        :data_x: (numpy_array) inputs
+        :data_y: (numpy_array) outputs
+    """
+
+    # Initialize your data, download, etc.
+    def __init__(self,data_x,data_y):
+        x = data_x
+        y = data_y
+        self.len = x.shape[0]
+        self.x1_data = x[:,:-1]
+        self.x2_data = x[:,-1]
+        self.y_data = y[:,:]
+
+    def __getitem__(self, index):
+        if torch.is_tensor(index):
+            index = index.tolist()
+
+        input1_ = self.x1_data[index,:]
+        input2_ = self.x2_data[index]
+        vol_imp = self.y_data[index,:]
+        vol_imp = np.array([vol_imp])
+        vol_imp = vol_imp.astype('float').reshape(-1,88)
+        sample = {'input': from_numpy(input_), 'output': from_numpy(vol_imp)}
+
+        return from_numpy(input1_),from_numpy(input2_),from_numpy(vol_imp)
+        
+
+    def __len__(self):
+        return self.len

@@ -8,6 +8,7 @@ import os
 import sys
 from os.path import dirname as up
 import scipy as scp
+import pandas as pd
 
 # Important directories
 code_dir = os.path.dirname(os.getcwd())
@@ -52,7 +53,7 @@ input_ = Parallel(n_jobs=num_cores)(delayed(Loop)(i) for i in heston)
 
 
 def BrentInput(i):
-    brent_ = scp.optimize.brentq(lambda x: call_option_brent(x,i[0],1.,0.05,i[1],i[2]),-10,10)
+    brent_ = scp.optimize.brentq(lambda x: call_option_brent(x,i[0],1.,0.05,i[1],i[2]),-50,50)
     return brent_
 
 brent_loop = tqdm(input_, desc="Brent")
@@ -64,4 +65,4 @@ brent_output = np.array(brent_output)
 value_ = {'S0':sample_heston[:,0],'tau':sample_heston[:,1],'r':sample_heston[:,2],'rho':sample_heston[:,3],'kappa':sample_heston[:,4],  
                                  'theta':sample_heston[:,5],  'sigma':sample_heston[:,6], 'V0':sample_heston[:,7],'price':input_,'vol_imp':brent_output}
 database = pd.DataFrame(value_)
-database.to_csv(deep_cal_dir + '/data/implied-volatility-heston.csv',index=False) 
+database.to_csv(deep_cal_dir + '/deep_calibration/data/implied-volatility-heston.csv',index=False) 

@@ -118,7 +118,7 @@ def Ch_Lifted_Heston(omega,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
 
 @jit
 def psi_Lifted_Heston(K_,r_,omega,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
-    k_ = np.log(K_)
+    k_ = np.log(K_/S0)
     phi = Ch_Lifted_Heston(omega,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M)
     F = phi*np.exp(-1j*omega.real*k_)
     aa = (1+1j*omega.real)
@@ -154,7 +154,7 @@ def Pricer_Lifted_Heston(K_,r_,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M,L_):
     a = 0
     b = L_
     #f = lambda x: psi_Lifted_Heston(K_,r_,x-2*1j,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M)
-    deg = 156
+    deg = 200
     x,w = np.polynomial.legendre.leggauss(deg)
     t = 0.5*(x + 1)*(b - a) + a
     gauss = 0
@@ -168,6 +168,6 @@ def create_vol_map():
     func2 = input_.append
     for s in np.arange(0.5,1.6,0.1):
         for j in [0.1,0.3,0.6,0.9,1.2,1.5,1.8,2.0]:
-            c = func1(1,r_=0.05,s,j,rho=-0.7,lamb=1.3,theta=0.3,nu=0.3,V0=0.2,N=20,rN=2.5,alpha=0.1+1/2,M=200,L_=50)
+            c = func1(s,r_=0.05,S0=1,T=j,rho=-0.7,lamb=1.3,theta=0.3,nu=0.3,V0=0.2,N=20,rN=2.5,alpha=0.1+1/2,M=200,L_=50)
             func2([s,j,c])
     return input_

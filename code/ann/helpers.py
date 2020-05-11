@@ -34,7 +34,7 @@ def plot_map(z,save=False):
         z: (array_like) the implied vol
         save: (boolean) save the file to the directory plot
     """
-    x, y = np.linspace(5,15,11), np.linspace(1,20,8)
+    x, y = np.log(np.linspace(5,15,11)/10), np.linspace(1,20,8)/10
     fig = go.Figure(data=go.Surface(x=x, y=y, z=z))
     fig.update_layout(title='Implied volatility map', autosize=False,
                   width=500, height=500,margin=dict(l=65, r=50, b=65, t=90))

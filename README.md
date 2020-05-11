@@ -6,7 +6,7 @@
 
 - [x] nn module
 - [x] tensorboard
-- [ ] pricing speed comparison
+- [x] pricing speed comparison
 - [ ] gp notebook
 - [ ] prediction result comparison
 - [ ] check brent result
