@@ -126,5 +126,13 @@ def price_heston_fourier(K_,alpha_,r_,tau_,kappa_,S0_,theta_,rho_,sigma_,V0_,L_)
         price of Heston by Fourier
 
     """
-    I = quad(lambda nu_: psi(nu_,alpha_,K_,r_,tau_,kappa_,S0_,theta_,rho_,sigma_,V0_) , 0, L_)
+    x,w = np.polynomial.legendre.leggauss(156)
+    f = lambda nu_: psi(nu_,alpha_,K_,r_,tau_,kappa_,S0_,theta_,rho_,sigma_,V0_)
+    t = 0.5*(x + 1)*(L_ - 0) + 0
+    
+    x1 = np.array([t.T])
+    fx = np.asarray(f(x1))
+
+    I = np.dot(fx, w)*0.5*(L_-0)
+    #I = quad(lambda nu_: psi(nu_,alpha_,K_,r_,tau_,kappa_,S0_,theta_,rho_,sigma_,V0_) , 0, L_)
     return I[0]

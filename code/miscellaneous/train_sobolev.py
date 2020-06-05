@@ -24,6 +24,7 @@ writer = SummaryWriter(code_dir + '/ann/runs/lifted_heston_experiment')
 
 f1 = StyblinskiTangNN()
 
+
 def train_sobolev(model,
                   train_loader,
                   test_loader,

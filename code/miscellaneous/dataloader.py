@@ -11,7 +11,7 @@ class SobolevDataset(Dataset):
 
     # Initialize your data, download, etc.
     def __init__(self,data):
-        x = data[:,:2]
+        x = data[:,:]
         self.len = x.shape[0]
         self.x_data = x
 

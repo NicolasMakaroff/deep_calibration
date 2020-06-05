@@ -132,7 +132,6 @@ def f(K_,r_,x,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M):
 @jit
 def Pricer_Lifted_Heston(K_,r_,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M,L_):
     """
-    Characteristic function for the lifted heston model.
     
     Arguments:
     ----------
@@ -151,7 +150,7 @@ def Pricer_Lifted_Heston(K_,r_,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M,L_):
     --------
         phi
     """
-    a = 0
+    a = 10
     b = L_
     #f = lambda x: psi_Lifted_Heston(K_,r_,x-2*1j,S0,T,rho,lamb,theta,nu,V0,N,rN,alpha,M)
     deg = 200

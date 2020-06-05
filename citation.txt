@@ -1,0 +1,3 @@
+https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1718102
+bs_pytorch : https://www.jtash.com/black-scholes-in-pytorch
+fft heston : https://zulfahmed.files.wordpress.com/2016/03/nimalinmoodley2005.pdf

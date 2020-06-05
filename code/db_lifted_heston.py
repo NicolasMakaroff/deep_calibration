@@ -39,7 +39,7 @@ def processInput(i):
     func2 = input_.append
     for s in np.arange(0.5,1.6,0.1):
         for j in [0.1,0.3,0.6,0.9,1.2,1.5,1.8,2.0]:
-            c = func1(1,r_=sample_heston[i,0],s,j,rho=sample_heston[i,1],lamb=sample_heston[i,2],theta=sample_heston[i,4],nu=sample_heston[i,3],V0=sample_heston[i,5],N=20,rN=2.5,alpha=0.1+1/2,M=200,L_=50)
+            c = func1(s,r_=sample_heston[i,0],1,j,rho=sample_heston[i,1],lamb=sample_heston[i,2],theta=sample_heston[i,4],nu=sample_heston[i,3],V0=sample_heston[i,5],N=20,rN=2.5,alpha=0.1+1/2,M=200,L_=50)
             func2([s,j,c])
     return input_
 
